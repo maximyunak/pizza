@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React from "react";
 
 const Categories = ({ categoryId, setCategoryId }) => {
-  const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
+  const categories = [
+    "Все",
+    "Мясные",
+    "Вегетарианская",
+    "Гриль",
+    "Острые",
+    "Закрытые",
+  ];
 
   return (
     <div className="categories">
@@ -10,7 +17,7 @@ const Categories = ({ categoryId, setCategoryId }) => {
           <li
             key={id}
             onClick={() => setCategoryId(id)}
-            className={categoryId === id ? 'active' : ''}
+            className={categoryId === id ? "active" : ""}
           >
             {el}
           </li>
