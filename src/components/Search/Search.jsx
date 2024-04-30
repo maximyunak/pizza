@@ -1,12 +1,38 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 
 import styles from './Search.module.scss';
 
 import { SearchContext } from '../../App';
+import debounce from 'lodash.debounce';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearch } from '../../redux/slices/searchSlice';
 
 const Search = () => {
-  const { searchValue } = useContext(SearchContext);
-  const { setSearchValue } = useContext(SearchContext);
+  // const { setSearchValue, searchValue } = useContext(SearchContext);
+  const inputRef = useRef();
+  const { valueSearch } = useSelector((state) => state.searchSlice);
+  const dispatch = useDispatch();
+
+  const [value, setValue] = useState('');
+
+  // console.log(inputRef.current.focus());
+  const onReset = () => {
+    setValue('');
+    dispatch(setSearch(''));
+  };
+
+  const onChangeInput = useCallback(
+    debounce((str) => {
+      dispatch(setSearch(str));
+    }, 500),
+    [],
+  );
+
+  const onChange = (e) => {
+    setValue(e.target.value);
+    onChangeInput(e.target.value);
+  };
+
   return (
     <div className={styles.root}>
       <svg
@@ -21,15 +47,16 @@ const Search = () => {
         <path d="M448.3,424.7L335,311.3c20.8-26,33.3-59.1,33.3-95.1c0-84.1-68.1-152.2-152-152.2c-84,0-152,68.2-152,152.2  s68.1,152.2,152,152.2c36.2,0,69.4-12.7,95.5-33.8L425,448L448.3,424.7z M120.1,312.6c-25.7-25.7-39.8-59.9-39.8-96.3  s14.2-70.6,39.8-96.3S180,80,216.3,80c36.3,0,70.5,14.2,96.2,39.9s39.8,59.9,39.8,96.3s-14.2,70.6-39.8,96.3  c-25.7,25.7-59.9,39.9-96.2,39.9C180,352.5,145.8,338.3,120.1,312.6z" />
       </svg>
       <input
-        value={searchValue}
+        ref={inputRef}
+        value={value}
         className={styles.input}
         type="text"
         placeholder="Search pizza..."
-        onChange={(e) => setSearchValue(e.target.value)}
+        onChange={onChange}
       />
-      {searchValue && (
+      {value && (
         <svg
-          onClick={() => setSearchValue('')}
+          onClick={onReset}
           className={styles.clearIcon}
           height="512px"
           id="Layer_1"

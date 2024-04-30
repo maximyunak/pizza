@@ -6,38 +6,50 @@ import axios from 'axios';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
 import { SearchContext } from '../App';
+import { useDispatch, useSelector } from 'react-redux';
+import { store } from '../redux/store';
+import { setCategoryId } from '../redux/slices/filterSlice';
 
 const Home = () => {
   const { searchValue } = useContext(SearchContext);
   const { setSearchValue } = useContext(SearchContext);
+  const { categoryId, sortBy } = useSelector((state) => state.filterSlice);
+  const { valueSearch } = useSelector((state) => state.searchSlice);
+  const dispatch = useDispatch();
 
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [categoryId, setCategoryId] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortType, setSortType] = useState({
-    name: 'популярности',
-    sort: 'rating',
-  });
+
+  const onClickCategory = (id) => {
+    dispatch(setCategoryId(id));
+  };
 
   useEffect(() => {
     setIsLoading(true);
 
-    const search = searchValue ? `&search=${searchValue}` : '';
+    const search = valueSearch ? `&search=${valueSearch}` : '';
     const page = `page=${currentPage}`;
-    axios
-      .get(
-        `https://65005f6f18c34dee0cd4cd4c.mockapi.io/items?limit=4&${page}&${
-          categoryId > 0 ? `category=${categoryId}` : ''
-        }&sortBy=${sortType.sort}${search}`,
-      )
-      .then((res) => {
+
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          `https://65005f6f18c34dee0cd4cd4c.mockapi.io/items?limit=4&${page}&${
+            categoryId > 0 ? `category=${categoryId}` : ''
+          }&sortBy=${sortBy.sortProperty}&filter=${search}`, //&sortBy=${sortType.sort}${search}
+        );
+
         setItems(res.data);
         setIsLoading(false);
-      });
+      } catch (error) {
+        console.log('err');
+      }
+    };
+
+    fetchData();
 
     // window.scrollTo(0, 0);
-  }, [categoryId, sortType, searchValue, currentPage]);
+  }, [categoryId, searchValue, currentPage, sortBy, valueSearch]);
 
   const pizzas = items
     // .filter((value) => value.name.toLowerCase().includes(searchValue))
@@ -47,8 +59,8 @@ const Home = () => {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories categoryId={categoryId} setCategoryId={setCategoryId} />
-        <Sort sortType={sortType} setSortType={(id) => setSortType(id)} />
+        <Categories categoryId={categoryId} setCategoryId={onClickCategory} />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : pizzas}</div>
