@@ -1,27 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSortType } from '../redux/slices/filterSlice';
+
+export const sortList = [
+  { name: 'популярности (DESC)', sortProperty: '-rating' },
+  { name: 'популярности (ASC)', sortProperty: 'rating' },
+  { name: 'цене (DESC)', sortProperty: '-price' },
+  { name: 'цене (ASC)', sortProperty: 'price' },
+  { name: 'алфавиту (DESC)', sortProperty: '-name' },
+  { name: 'алфавиту (ASC)', sortProperty: 'name' },
+];
 
 const Sort = () => {
   const { sortBy } = useSelector((state) => state.filterSlice);
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
-  const list = [
-    { name: 'популярности (DESC)', sortProperty: '-rating' },
-    { name: 'популярности (ASC)', sortProperty: 'rating' },
-    { name: 'цене (DESC)', sortProperty: '-price' },
-    { name: 'цене (ASC)', sortProperty: 'price' },
-    { name: 'алфавиту (DESC)', sortProperty: '-name' },
-    { name: 'алфавиту (ASC)', sortProperty: 'name' },
-  ];
+  const sortRef = useRef();
 
   const onClickList = (el) => {
     dispatch(setSortType(el));
     setVisible(false);
   };
 
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (!e.composedPath().includes(sortRef.current)) {
+        setVisible(false);
+      }
+    };
+    document.body.addEventListener('click', handleClick);
+
+    return () => {
+      document.body.removeEventListener('click', handleClick);
+    };
+  }, []);
+
   return (
-    <div className="sort">
+    <div className="sort" ref={sortRef}>
       <div className="sort__label">
         <svg
           width="10"
@@ -41,7 +56,7 @@ const Sort = () => {
       {visible && (
         <div className="sort__popup">
           <ul>
-            {list.map((el, id) => (
+            {sortList.map((el, id) => (
               <li
                 key={id}
                 onClick={() => onClickList(el)}

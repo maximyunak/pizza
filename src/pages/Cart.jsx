@@ -393,7 +393,11 @@ const Cart = () => {
             </span>
           </div>
           <div class="cart__bottom-buttons">
-            <Link to="/" class="button button--outline button--add go-back-btn">
+            <Link
+              to="/"
+              onClick={() => window.scrollTo(0, 0)}
+              class="button button--outline button--add go-back-btn"
+            >
               <svg
                 width="8"
                 height="14"
