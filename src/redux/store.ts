@@ -12,3 +12,11 @@ export const store = configureStore({
     pizzasSlice,
   },
 });
+
+// // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch;
+
+// export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>;
+export type AppStore = ReturnType<typeof store.dispatch>;
+// export type AppDispatch = AppStore['dispatch'];

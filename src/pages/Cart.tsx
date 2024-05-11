@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CartItem from '../components/CartItem';
-import { useDispatch, useSelector } from 'react-redux';
-import { clearPizzas, selectCart } from '../redux/slices/cartSlice';
+import { clearPizzas } from '../redux/slices/cartSlice';
 import CartEmpty from '../components/CartEmpty';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
-const Cart = () => {
-  const { pizzas } = useSelector(selectCart);
-  const dispatch = useDispatch();
+const Cart: React.FC = () => {
+  const { pizzas } = useAppSelector((state) => state.cartSlice);
+  const dispatch = useAppDispatch();
 
   const removePizzasCart = () => {
     dispatch(clearPizzas());
@@ -21,9 +21,9 @@ const Cart = () => {
   return (
     <div className="container container--cart">
       {totalPizzas !== 0 ? (
-        <div class="cart">
-          <div class="cart__top">
-            <h2 class="content__title">
+        <div className="cart">
+          <div className="cart__top">
+            <h2 className="content__title">
               <svg
                 width="18"
                 height="18"
@@ -55,7 +55,7 @@ const Cart = () => {
               </svg>
               Корзина
             </h2>
-            <div class="cart__clear" onClick={removePizzasCart}>
+            <div className="cart__clear" onClick={removePizzasCart}>
               <svg
                 width="20"
                 height="20"
@@ -96,13 +96,13 @@ const Cart = () => {
               <span>Очистить корзину</span>
             </div>
           </div>
-          <div class="content__items">
-            {pizzas.map((obj) => (
+          <div className="content__items">
+            {pizzas.map((obj: any) => (
               <CartItem key={`${obj.id}_${obj.name}`} {...obj} />
             ))}
           </div>
-          <div class="cart__bottom">
-            <div class="cart__bottom-details">
+          <div className="cart__bottom">
+            <div className="cart__bottom-details">
               <span>
                 Всего пицц: <b>{totalPizzas} шт.</b>{' '}
               </span>
@@ -110,11 +110,11 @@ const Cart = () => {
                 Сумма заказа: <b>{totalPrice} ₽</b>{' '}
               </span>
             </div>
-            <div class="cart__bottom-buttons">
+            <div className="cart__bottom-buttons">
               <Link
                 to="/"
                 onClick={() => window.scrollTo(0, 0)}
-                class="button button--outline button--add go-back-btn"
+                className="button button--outline button--add go-back-btn"
               >
                 <svg
                   width="8"
@@ -134,7 +134,7 @@ const Cart = () => {
 
                 <span>Вернуться назад</span>
               </Link>
-              <div class="button pay-btn">
+              <div className="button pay-btn">
                 <span>Оплатить сейчас</span>
               </div>
             </div>

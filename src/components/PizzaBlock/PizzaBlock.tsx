@@ -1,16 +1,26 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { addPizza } from '../../redux/slices/cartSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+// import { AppStore } from '../../redux/store';
 
-const PizzaBlock = ({ id, name, price, imageUrl, sizes, types }) => {
+interface pizzaProps {
+  id: number;
+  name: string;
+  price: number;
+  imageUrl: string;
+  sizes: number[];
+  types: number[];
+}
+
+const PizzaBlock: React.FC<pizzaProps> = ({ id, name, price, imageUrl, sizes, types }) => {
   const [activeSize, setActiveSize] = useState(0);
   const [activeType, setActiveType] = useState(0);
 
-  const cartItem = useSelector((state) => state.cartSlice.pizzas.find((obj) => obj.id === id));
+  const cartItem = useAppSelector((state) => state.cartSlice.pizzas.find((obj) => obj.id === id));
 
   // const count = cartItem ? cartItem.count : 0;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const typeNames = ['Тонкая', 'Традиционная'];
   const sizeNames = ['26см', '30см', '40см'];
@@ -35,7 +45,7 @@ const PizzaBlock = ({ id, name, price, imageUrl, sizes, types }) => {
         <h4 className="pizza-block__title">{name}</h4>
         <div className="pizza-block__selector">
           <ul>
-            {types.map((type, id) => (
+            {types.map((type: number, id: number) => (
               <li
                 onClick={() => setActiveType(id)}
                 className={id === activeType ? 'active' : ''}
@@ -46,7 +56,7 @@ const PizzaBlock = ({ id, name, price, imageUrl, sizes, types }) => {
             ))}
           </ul>
           <ul>
-            {sizes.map((size, id) => (
+            {sizes.map((size: number, id: number) => (
               <li
                 key={id}
                 className={id === activeSize ? 'active' : ''}

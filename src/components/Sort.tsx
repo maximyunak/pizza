@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSortType } from '../redux/slices/filterSlice';
+import { SortItem, setSortType } from '../redux/slices/filterSlice';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
-export const sortList = [
+export const sortList: SortItem[] = [
   { name: 'популярности (DESC)', sortProperty: '-rating' },
   { name: 'популярности (ASC)', sortProperty: 'rating' },
   { name: 'цене (DESC)', sortProperty: '-price' },
@@ -12,19 +12,19 @@ export const sortList = [
 ];
 
 const Sort = () => {
-  const { sortBy } = useSelector((state) => state.filterSlice);
-  const dispatch = useDispatch();
+  const { sortBy } = useAppSelector((state) => state.filterSlice);
+  const dispatch = useAppDispatch();
   const [visible, setVisible] = useState(false);
-  const sortRef = useRef();
+  const sortRef = useRef<HTMLDivElement>(null);
 
-  const onClickList = (el) => {
+  const onClickList = (el: SortItem) => {
     dispatch(setSortType(el));
     setVisible(false);
   };
 
   useEffect(() => {
-    const handleClick = (e) => {
-      if (!e.composedPath().includes(sortRef.current)) {
+    const handleClick = (e: MouseEvent) => {
+      if (sortRef.current && !e.composedPath().includes(sortRef.current)) {
         setVisible(false);
       }
     };
@@ -56,7 +56,7 @@ const Sort = () => {
       {visible && (
         <div className="sort__popup">
           <ul>
-            {sortList.map((el, id) => (
+            {sortList.map((el, id: number) => (
               <li
                 key={id}
                 onClick={() => onClickList(el)}

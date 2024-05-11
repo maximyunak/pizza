@@ -1,9 +1,19 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { addPizza, minusPizza, removePizza } from '../redux/slices/cartSlice';
+import { useAppDispatch } from '../redux/hooks';
 
-const CartItem = ({ id, name, price, imageUrl, type, size, count }) => {
-  const dispatch = useDispatch();
+interface CartItemProps {
+  id: number;
+  name: string;
+  price: number;
+  imageUrl: string;
+  type: string;
+  size: string;
+  count: number;
+}
+
+const CartItem: React.FC<CartItemProps> = ({ id, name, price, imageUrl, type, size, count }) => {
+  const dispatch = useAppDispatch();
 
   const handleRemove = () => {
     dispatch(removePizza(id));
@@ -11,7 +21,7 @@ const CartItem = ({ id, name, price, imageUrl, type, size, count }) => {
   };
 
   const handleAdd = () => {
-    dispatch(addPizza({ id }));
+    dispatch(addPizza({ id, name, price, imageUrl, type, size }));
   };
 
   const handleMinus = () => {
@@ -21,11 +31,7 @@ const CartItem = ({ id, name, price, imageUrl, type, size, count }) => {
   return (
     <div className="cart__item">
       <div className="cart__item-img">
-        <img
-          className="pizza-block__image"
-          src="https://dodopizza-a.akamaihd.net/static/Img/Products/Pizza/ru-RU/b750f576-4a83-48e6-a283-5a8efb68c35d.jpg"
-          alt="Pizza"
-        />
+        <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
       </div>
       <div className="cart__item-info">
         <h3>{name}</h3>

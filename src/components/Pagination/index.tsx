@@ -8,7 +8,7 @@ import { setCurrentPage } from '../../redux/slices/filterSlice';
 
 const Pagination = () => {
   const dispatch = useDispatch();
-  const { currentPage } = useSelector((state) => state.filterSlice);
+  const { currentPage } = useSelector((state: any) => state.filterSlice);
 
   return (
     <ReactPaginate
